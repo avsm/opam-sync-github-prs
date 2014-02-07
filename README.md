@@ -30,6 +30,19 @@ eval `opam config env`
 ocamllex ...
 ```
 
+### Installation
+
+You will need Core, Lwt and the GitHub API library.
+
+```
+opam install core lwt github
+make
+make install
+```
+
+By default, it installs into the local OPAM binary directory, and if OPAM is
+not installed then a `PREFIX` variable will install it.
+
 ### Usage
 
 $ opam-sync-github-prs -help
