@@ -24,6 +24,7 @@ let make_compiler_spec ~version ~output_dir pull =
   let name = version ^ suffix in
   let descr = pull.pull_title in
   let subdir = sprintf "%s/compilers/%s/%s/" output_dir version name in
+  let base = pull.pull_base.branch_ref in
   printf "Generating: %s\n%!" subdir;
   Unix.mkdir_p subdir;
   let open Out_channel in
@@ -33,7 +34,7 @@ let make_compiler_spec ~version ~output_dir pull =
         [
           "opam-version: \"1\"";
           sprintf "version: \"%s\"" version;
-          "src: \"https://github.com/ocaml/ocaml/archive/trunk.tar.gz\"";
+          sprintf "src: \"https://github.com/ocaml/ocaml/archive/%s.tar.gz\"" base;
           sprintf "patches: %S" pull.pull_diff_url;
           "build: [";
           "  [\"./configure\" \"-prefix\" prefix \"-with-debug-runtime\"]";
