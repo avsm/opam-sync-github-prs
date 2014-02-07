@@ -1,0 +1,2 @@
+true: package(github.unix), package(lwt.unix), package(cmdliner)
+true: debug, annot, bin_annot, principal, strict_sequence
