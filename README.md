@@ -45,6 +45,7 @@ not installed then a `PREFIX` variable will install it.
 
 ### Usage
 
+```
 $ opam-sync-github-prs -help
 
 Generates an OPAM compiler remote for active GitHub OCaml PRs
