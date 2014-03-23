@@ -18,7 +18,7 @@
 open Core.Std
 open Lwt
 
-let user = "avsm"
+let user = "bactrian"
 let repo = "opam-repository"
 let default_branch = "master"
 
@@ -33,10 +33,16 @@ let auth () = Lwt_main.run (
     | None -> eprintf "Use git-jar to create an `infra` token first.\n%!"; exit (-1)
     | Some t -> t)
 
-let pull ~user ~repo ~base ~head ~title ~msg =
+let pull ~user ~target_user ~repo ~base ~head ~title ~msg =
 
   let token = Github.Token.of_string (auth ()).auth_token in
 
+  let head =
+    if target_user = user then
+      head
+    else
+      sprintf "%s:%s" user head in
+  
   let pull = Github_t.({
       new_pull_title=title;
       new_pull_base=base;
@@ -44,15 +50,18 @@ let pull ~user ~repo ~base ~head ~title ~msg =
       new_pull_body=(Some msg);
     }) in
 
-  Github.(Monad.(run (Pull.create ~token ~user ~repo ~pull ()))) >>= fun pull ->
+  Github.(Monad.(run (Pull.create ~token ~user:target_user ~repo ~pull ()))) >>= fun pull ->
   let num = pull.Github_t.pull_number in
   eprintf "created pull request number %d\n%!" num;
   return ()
 
 module Flag = struct
   open Command.Spec
+  let target_user () =
+    flag "-x" ~doc:"USER Github user to open pull request against."
+      (optional_with_default user string)
   let user () =
-    flag "-u" ~doc:"USER Github user to open pull request against."
+    flag "-u" ~doc:"USER Github user to open pull request from."
       (optional_with_default user string)
   let repo () =
     flag "-r" ~doc:"REPOSITORY Repository name to open pull request against."
@@ -74,12 +83,13 @@ let _ =
     ~summary:"Show issues in paragraph order."
     Command.Spec.(empty
                   +> Flag.user ()
+                  +> Flag.target_user ()
                   +> Flag.repo ()
                   +> Flag.base ()
                   +> Flag.head ()
                   +> Flag.title ()
                   +> Flag.message ()
                  )
-    (fun user repo base head title msg () ->
-       Lwt_main.run (pull ~user ~repo ~base ~head ~title ~msg))
+    (fun user target_user repo base head title msg () ->
+       Lwt_main.run (pull ~user ~target_user ~repo ~base ~head ~title ~msg))
   |> Command.run 
