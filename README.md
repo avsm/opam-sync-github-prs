@@ -14,12 +14,12 @@ system  C system                      System compiler (4.01.0)
 --     -- 4.00.0                      Official 4.00.0 release
 --     -- 4.00.1                      Official 4.00.1 release
 --     -- 4.01.0                      Official 4.01.0 release
---     -- 4.02.0dev+pr2               Parse -.x**2. (unary -.) as -.(x**2.).  Fix PR#3414
---     -- 4.02.0dev+pr3               Extend record punning to allow destructuring.
---     -- 4.02.0dev+pr4               Fix for PR#4832 (Filling bigarrays may block out runtime)
---     -- 4.02.0dev+pr6               Warn user when a type variable in a type constraint has been instantiated.
---     -- 4.02.0dev+pr7               Extend ocamllex with actions before refilling
---     -- 4.02.0dev+pr8               Adds a .gitignore to ignore all generated files during `make world.opt'
+--     -- 4.02.0+pr2                  Parse -.x**2. (unary -.) as -.(x**2.).  Fix PR#3414
+--     -- 4.02.0+pr3                  Extend record punning to allow destructuring.
+--     -- 4.02.0+pr4                  Fix for PR#4832 (Filling bigarrays may block out runtime)
+--     -- 4.02.0+pr6                  Warn user when a type variable in a type constraint has been instantiated.
+--     -- 4.02.0+pr7                  Extend ocamllex with actions before refilling
+--     -- 4.02.0+pr8                  Adds a .gitignore to ignore all generated files during `make world.opt'
 ```
 
 You can experiment with the lexing PR by running:

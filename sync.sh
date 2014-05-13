@@ -4,7 +4,7 @@ REPO=../auto-opam-repository
 UPSTREAM=git://github.com/ocaml/opam-repository
 GEN=`pwd`/generate.native
 PULL=`pwd`/create_pull.native
-V=4.02.0dev
+V=4.03.0
 if [ ! -d ${REPO} ]; then
   git clone git@github.com:bactrian/opam-repository ${REPO}
 fi
