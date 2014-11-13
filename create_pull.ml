@@ -18,10 +18,6 @@
 open Core.Std
 open Lwt
 
-let user = "bactrian"
-let repo = "opam-repository"
-let default_branch = "master"
-
 (* Run a Github function inside an Lwt evaluator *)
 let run_gh fn = Lwt_main.run (Github.Monad.run (fn ()))
 (* Get our API tokens from the Github cookie jar *)
@@ -59,16 +55,16 @@ module Flag = struct
   open Command.Spec
   let target_user () =
     flag "-x" ~doc:"USER Github user to open pull request against."
-      (optional_with_default user string)
+      (required string)
   let user () =
     flag "-u" ~doc:"USER Github user to open pull request from."
-      (optional_with_default user string)
+      (required string)
   let repo () =
     flag "-r" ~doc:"REPOSITORY Repository name to open pull request against."
-      (optional_with_default repo string)
+      (required string)
   let base () =
     flag "-b" ~doc:"BRANCH Base branch of repository to pull your changes into."
-      (optional_with_default default_branch string)
+      (required string)
   let head () =
     flag "-h" ~doc:"BRANCH The name of the branch where your changes are implemented.  For cross-repository pull requests in the same network, namespace head with a user like this: username:branch."
       (required string)
