@@ -42,7 +42,7 @@ let pull ~user ~target_user ~repo ~base ~head ~title ~msg =
       head
     else
       sprintf "%s:%s" user head in
-  
+
   let pull = Github_t.({
       new_pull_title=title;
       new_pull_base=base;
