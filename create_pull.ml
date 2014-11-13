@@ -21,17 +21,18 @@ open Lwt
 (* Run a Github function inside an Lwt evaluator *)
 let run_gh fn = Lwt_main.run (Github.Monad.run (fn ()))
 (* Get our API tokens from the Github cookie jar *)
-let auth () = Lwt_main.run (
+let auth (token_name : string) = Lwt_main.run (
     Github_cookie_jar.init ()
     >>= fun jar ->
-    Github_cookie_jar.get jar ~name:"infra"
+    Github_cookie_jar.get jar ~name:token_name
     >|= function
-    | None -> eprintf "Use git-jar to create an `infra` token first.\n%!"; exit (-1)
+    | None -> eprintf "Use git-jar to create an `%s` token first.\n%!"
+                token_name; exit (-1)
     | Some t -> t)
 
-let pull ~user ~target_user ~repo ~base ~head ~title ~msg =
+let pull ~user ~target_user ~repo ~base ~head ~title ~msg ~token_name =
 
-  let token = Github.Token.of_string (auth ()).auth_token in
+  let token = Github.Token.of_string (auth token_name).auth_token in
 
   let head =
     if target_user = user then
@@ -72,6 +73,8 @@ module Flag = struct
     flag "-t" ~doc:"STRING The title of the pull request" (required string)
   let message () =
     flag "-m" ~doc:"MESSAGE Pull request message" (required string)
+  let token_name () =
+    flag "-k" ~doc:"TOKEN_NAME Name of the token in git-jar" (required string)
 end
 
 let _ =
@@ -85,7 +88,9 @@ let _ =
                   +> Flag.head ()
                   +> Flag.title ()
                   +> Flag.message ()
+                  +> Flag.token_name ()
                  )
-    (fun user target_user repo base head title msg () ->
-       Lwt_main.run (pull ~user ~target_user ~repo ~base ~head ~title ~msg))
+    (fun user target_user repo base head title msg token_name () ->
+       Lwt_main.run (pull ~user ~target_user ~repo ~base ~head ~title ~msg
+                       ~token_name))
   |> Command.run 
