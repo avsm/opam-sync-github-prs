@@ -67,7 +67,10 @@ module Flag = struct
     flag "-b" ~doc:"BRANCH Base branch of repository to pull your changes into."
       (required string)
   let head () =
-    flag "-h" ~doc:"BRANCH The name of the branch where your changes are implemented.  For cross-repository pull requests in the same network, namespace head with a user like this: username:branch."
+    flag "-h" ~doc:"BRANCH The name of the branch where your changes are \
+                    implemented.  For cross-repository pull requests in the \
+                    same network, namespace head with a user like this: \
+                    username:branch."
       (required string)
   let title () =
     flag "-t" ~doc:"STRING The title of the pull request" (required string)
