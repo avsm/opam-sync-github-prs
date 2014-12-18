@@ -26,6 +26,14 @@ let make_compiler_spec ~version ~output_dir pull =
   let subdir = sprintf "%s/compilers/%s/%s/" output_dir version name in
   let source_user = pull.pull_user.user_login in
   let head = pull.pull_head.branch_ref in
+  let source_url =
+    match pull.pull_head.branch_repo with
+      Some repo -> 
+        sprintf "https://github.com/%s/archive/%s.tar.gz"
+         repo.repo_full_name head
+    | None ->
+         sprintf "https://github.com/%s/ocaml/archive/%s.tar.gz" source_user head
+  in
   printf "Generating: %s\n%!" subdir;
   Unix.mkdir_p subdir;
   let open Out_channel in
@@ -35,7 +43,7 @@ let make_compiler_spec ~version ~output_dir pull =
         [
           "opam-version: \"1\"";
           sprintf "version: \"%s\"" version;
-          sprintf "src: \"https://github.com/%s/ocaml/archive/%s.tar.gz\"" source_user head;
+          sprintf "src: \"%s\"" source_url;
           "build: [";
           "  [\"./configure\" \"-prefix\" prefix \"-with-debug-runtime\"]";
           "  [make \"world\"]";
