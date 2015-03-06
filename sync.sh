@@ -20,4 +20,6 @@ $GEN
 git add compilers
 git commit -a -m 'Sync latest compiler pull requests'
 git push origin $BRANCH
-$PULL -h $BRANCH -m "The latest compiler pull requests for OCaml $V as of $HRDATE" -t "Sync OCaml compiler PRs" -b master -r opam-repository -u bactrian -x ocaml
+$PULL -h $BRANCH -m "The latest compiler pull requests for OCaml $V as of
+$HRDATE" -t "Sync OCaml compiler PRs" -b master -r opam-repository -u bactrian \
+  -x ocaml -k infra
