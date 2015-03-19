@@ -55,9 +55,18 @@ let make_compiler_spec ~version ~output_dir pull =
         ] |> output_lines t 
       )
 
+let all_pulls ~user ~repo =
+  let open Github in
+  let open Monad in
+  let rec loop page reqs =
+    Pull.for_repo ~page ~user ~repo ~state:`Open () >>= function
+    | [] -> return (List.concat reqs)
+    | rs -> loop (page + 1) (rs :: reqs)
+  in loop 1 []
+
 let get_pulls user repo version output_dir () =
   let open Github in
-  let pulls = Pull.for_repo ~user ~repo ~state:`Open () in
+  let pulls = all_pulls ~user ~repo in
   Lwt_main.run (Monad.run pulls);
   |> List.iter ~f:(make_compiler_spec ~version ~output_dir)
 
