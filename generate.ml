@@ -30,7 +30,7 @@ let make_compiler_spec ~version ~output_dir pull =
     match pull.pull_head.branch_repo with
       Some repo -> 
         sprintf "https://github.com/%s/archive/%s.tar.gz"
-         repo.repo_full_name head
+         repo.repository_full_name head
     | None ->
          sprintf "https://github.com/%s/ocaml/archive/%s.tar.gz" source_user head
   in
@@ -66,8 +66,8 @@ let all_pulls ~user ~repo =
 
 let get_pulls user repo version output_dir () =
   let open Github in
-  let pulls = all_pulls ~user ~repo in
-  Lwt_main.run (Monad.run pulls);
+  let pulls = Pull.for_repo ~user ~repo ~state:`Open () in
+  Lwt_main.run (Monad.run (pulls |> Stream.to_list))
   |> List.iter ~f:(make_compiler_spec ~version ~output_dir)
 
 let _ =
