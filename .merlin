@@ -1,1 +1,6 @@
-PKG core lwt github
+PKG core
+PKG lwt
+PKG github
+
+S .
+B _build

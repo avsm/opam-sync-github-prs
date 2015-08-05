@@ -32,7 +32,7 @@ let auth (token_name : string) = Lwt_main.run (
 
 let pull ~user ~target_user ~repo ~base ~head ~title ~msg ~token_name =
 
-  let token = Github.Token.of_string (auth token_name).auth_token in
+  let token = Github.Token.of_string (auth token_name).Github_t.auth_token in
 
   let head =
     if target_user = user then
@@ -47,10 +47,13 @@ let pull ~user ~target_user ~repo ~base ~head ~title ~msg ~token_name =
       new_pull_body=(Some msg);
     }) in
 
-  Github.(Monad.(run (Pull.create ~token ~user:target_user ~repo ~pull ()))) >>= fun pull ->
-  let num = pull.Github_t.pull_number in
-  eprintf "created pull request number %d\n%!" num;
-  return ()
+  Github.(Monad.(run (
+    Pull.create ~token ~user:target_user ~repo ~pull ()
+    >>~ fun pull ->
+    let num = pull.Github_t.pull_number in
+    eprintf "created pull request number %d\n%!" num;
+    return ()
+  )))
 
 module Flag = struct
   open Command.Spec
