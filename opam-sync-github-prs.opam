@@ -9,16 +9,15 @@ tags: [
   "flags:plugin"
 ]
 build: [
-  [make]
+  ["dune" "build"]
 ]
-install: [
-  [make "install"]
-]
-remove: [["rm" "-f" "%{bin}%/opam-sync-github-prs"]]
 depends: [
-  "ocamlfind" { build }
-  "core" { build & >="109.53.01"}
-  "github" { build & >="1.0.0" }
-  "lwt" { build & >="2.4.2"}
+  "dune" { build }
+  "bos" 
+  "github-unix" { >="3.0.0" }
+  "lwt" { >"2.4.2"}
+  "crunch"
+  "ptime"
+  "ocaml-version"
+  "rresult"
 ]
-available: [ ocaml-version >= "4.01.0" ]

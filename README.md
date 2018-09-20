@@ -1,65 +1,43 @@
-## Sync OCaml GitHub issues with OPAM
+## Sync OCaml development versions with opam 2
 
-This command-line tool generates an OPAM repository that
-contains a set of compiler switches that apply patches from
-GitHub pull requests to OCaml.
+This command-line tool generates an [opam2](https://opam.ocaml.org) repository
+that contains a set of compiler switches that apply patches from
+GitHub pull requests to OCaml.  They also contain the development
+versions of the OCaml compiler with several common configure-time
+variants, such as AFL support or the Flambda inliner.
 
 For example, here is a shortened list of outputs:
 
 ```
-$ opam switch --all
-system  C system                      System compiler (4.01.0)
---     -- 3.11.2                      Official 3.11.2 release
---     -- 3.12.1                      Official 3.12.1 release
---     -- 4.00.0                      Official 4.00.0 release
---     -- 4.00.1                      Official 4.00.1 release
---     -- 4.01.0                      Official 4.01.0 release
---     -- 4.02.0+pr2                  Parse -.x**2. (unary -.) as -.(x**2.).  Fix PR#3414
---     -- 4.02.0+pr3                  Extend record punning to allow destructuring.
---     -- 4.02.0+pr4                  Fix for PR#4832 (Filling bigarrays may block out runtime)
---     -- 4.02.0+pr6                  Warn user when a type variable in a type constraint has been instantiated.
---     -- 4.02.0+pr7                  Extend ocamllex with actions before refilling
---     -- 4.02.0+pr8                  Adds a .gitignore to ignore all generated files during `make world.opt'
+$ opam switch list-available
+ocaml-variants      4.08.0                             OCaml 4.08.0~dev
+ocaml-variants      4.08.0+afl                         OCaml 4.08.0+afl~dev with AFL (fuzzing) support
+ocaml-variants      4.08.0+default-unsafe-string       OCaml 4.08.0+default-unsafe-string~dev with default to unsafe strings
+ocaml-variants      4.08.0+flambda                     OCaml 4.08.0+flambda~dev with flambda inlining
+ocaml-variants      4.08.0+force-safe-string           OCaml 4.08.0+force-safe-string~dev with force safe string mode
+ocaml-variants      4.08.0+pr24                        Switch to the SipHash hash function
+ocaml-variants      4.08.0+pr100                       First class module dynlink
+ocaml-variants      4.08.0+pr102                       Improved error messages
+ocaml-variants      4.08.0+pr113                       Creating -unsafe dependant array/string/bigarray access primitives
+ocaml-variants      4.08.0+pr126                       Automatically insert source location
 ```
 
-You can experiment with the lexing PR by running:
+To use it, first add the development remote:
 
 ```
-open switch 4.02.0dev+pr7
-eval `opam config env`
-ocamllex ...
+opam repo add dev https://github.com/ocaml/ocaml-pr-repository.git --set-default
+opam update
+
+opam switch create 4.08.0+flambda
+eval $(opam env)
+ocaml -version
+
+opam switch list-available
 ```
 
-### Installation
+### Add a variant
 
-You will need Core, Lwt and the GitHub API library.
-
-```
-opam install core lwt github
-make
-make install
-```
-
-By default, it installs into the local OPAM binary directory, and if OPAM is
-not installed then a `PREFIX` variable will install it.
-
-### Usage
-
-```
-$ opam-sync-github-prs -help
-
-Generates an OPAM compiler remote for active GitHub OCaml PRs
-
-  opam-sync-github-prs 
-
-=== flags ===
-
-  [-compiler-version string]  OCaml compiler version
-  [-github-repo string]       GitHub repository
-  [-github-user string]       GitHub username
-  [-output-dir string]        Directory containing the OPAM repository
-  [-build-info]               print info about this build and exit
-  [-version]                  print the version of this build and exit
-  [-help]                     print this help text and exit
-                              (alias: -?)
-```
+The tool that generates these repositories is at <https://github.com/ocaml/opam-sync-github-prs>,
+and its help can be accessed via `opam-sync-github-prs --help`.  It runs regularly to push
+the results to <https://github.com/ocaml/ocaml-pr-repository>, which is what most developers
+will want to use.

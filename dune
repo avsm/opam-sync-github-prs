@@ -1,0 +1,9 @@
+(executable
+ (name generate)
+ (public_name opam-sync-github-prs)
+ (libraries github.unix cmdliner lwt.unix bos ocaml-version rresult))
+
+(rule
+ (deps (source_tree files))
+ (targets ifiles.ml)
+ (action (run ocaml-crunch -m plain -o %{targets} files)))
