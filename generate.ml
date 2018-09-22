@@ -63,8 +63,8 @@ let gen_base ~output_dir ov =
   let version_succ = O.(to_string (with_patch ov (match patch ov with None -> Some 0 | Some v -> Some (v+1) ))) in
   subst_tmpl "base-opam" [ "VERSION", version; "VERSION_SUCC", version_succ ] >>= fun opam ->
   let name = sprintf "ocaml.%s" O.(to_string ov) in
-  let odir = Fpath.(output_dir / "packages") in
-  write Fpath.(odir / name) "opam" opam >>= fun () ->
+  let odir = Fpath.(output_dir / "packages" / name) in
+  write odir "opam" opam >>= fun () ->
   match Ifiles.read "gen_ocaml_config.ml.in" with
   | None -> Error (`Msg "internal error: crunch file not found")
   | Some c -> write Fpath.(odir / "files") "gen_ocaml_config.ml.in" c
